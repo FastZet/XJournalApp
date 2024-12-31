@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/entriesListFragment">
+
+    <fragment
+        android:id="@+id/entriesListFragment"
+        android:name="com.brksays.xjournal.ui.EntriesListFragment"
+        android:label="@string/app_name">
+        <action
+            android:id="@+id/action_entriesList_to_editor"
+            app:destination="@id/entryEditorFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/entryEditorFragment"
+        android:name="com.brksays.xjournal.ui.EntryEditorFragment"
+        android:label="Edit Entry" />
+
+</navigation>
