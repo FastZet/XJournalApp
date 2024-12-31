@@ -31,31 +31,51 @@ class EntryEditorFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupToolbar()
-        observeCurrentEntry()
+        loadSelectedEntry()
+        observeUiState()
     }
 
     private fun setupToolbar() {
-        binding.editorToolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
+        binding.editorToolbar.apply {
+            title = if (viewModel.selectedEntry != null) "Edit Entry" else "New Entry"
+            
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
 
-        binding.editorToolbar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.action_save -> {
-                    saveEntry()
-                    true
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_save -> {
+                        saveEntry()
+                        true
+                    }
+                    else -> false
                 }
-                else -> false
             }
         }
     }
 
-    private fun observeCurrentEntry() {
+    private fun loadSelectedEntry() {
+        // Load the selected entry if we're editing
+        viewModel.selectedEntry?.let { entry ->
+            binding.titleEditText.setText(entry.title)
+            binding.contentEditText.setText(entry.content)
+        }
+    }
+
+    private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.currentEntry.collect { entry ->
-                entry?.let {
-                    binding.titleEditText.setText(it.title)
-                    binding.contentEditText.setText(it.content)
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is JournalUiState.Success -> {
+                        // Handle success if needed
+                    }
+                    is JournalUiState.Error -> {
+                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                    }
+                    is JournalUiState.Loading -> {
+                        // Handle loading if needed
+                    }
                 }
             }
         }
@@ -70,6 +90,7 @@ class EntryEditorFragment : Fragment() {
             return
         }
 
+        binding.titleInputLayout.error = null
         viewModel.saveEntry(title, content)
         findNavController().navigateUp()
     }
