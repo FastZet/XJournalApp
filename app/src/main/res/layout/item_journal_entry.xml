@@ -14,28 +14,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/titleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/titleText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                tools:text="Journal Entry Title" />
-
-            <ImageView
-                android:id="@+id/syncStatusIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:contentDescription="@string/sync_status" />
-
-        </LinearLayout>
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            tools:text="Journal Entry Title" />
 
         <TextView
             android:id="@+id/previewText"
@@ -47,15 +31,27 @@
             android:textAppearance="?attr/textAppearanceBodyMedium"
             tools:text="Preview of the journal entry content..." />
 
-        <TextView
-            android:id="@+id/dateText"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?android:attr/textColorSecondary"
-            tools:text="Dec 31, 2024 18:53" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                tools:text="December 31, 2024" />
+
+            <ImageView
+                android:id="@+id/syncStatusIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Sync Status"
+                tools:src="@android:drawable/ic_menu_upload" />
+        </LinearLayout>
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>
