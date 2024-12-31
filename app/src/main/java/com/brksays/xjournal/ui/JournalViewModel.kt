@@ -18,6 +18,9 @@ class JournalViewModel(
     private val _uiState = MutableStateFlow<JournalUiState>(JournalUiState.Loading)
     val uiState: StateFlow<JournalUiState> = _uiState
 
+    private var _selectedEntry: JournalEntry? = null
+    val selectedEntry get() = _selectedEntry
+
     init {
         loadEntries()
     }
@@ -36,15 +39,27 @@ class JournalViewModel(
         }
     }
 
-    fun addEntry(title: String, content: String) {
+    fun selectEntry(entry: JournalEntry) {
+        _selectedEntry = entry
+    }
+
+    fun createNewEntry() {
+        _selectedEntry = null
+    }
+
+    fun saveEntry(title: String, content: String) {
         viewModelScope.launch {
             try {
-                val newEntry = JournalEntry(
-                    title = title,
-                    content = content,
+                val entry = _selectedEntry?.copy(
+                    title = title.trim(),
+                    content = content.trim()
+                ) ?: JournalEntry(
+                    title = title.trim(),
+                    content = content.trim(),
                     timestamp = Instant.now().epochSecond
                 )
-                repository.saveEntry(newEntry)
+                
+                repository.saveEntry(entry)
                 // State will be automatically updated through the Flow in loadEntries
             } catch (e: Exception) {
                 _uiState.value = JournalUiState.Error(
