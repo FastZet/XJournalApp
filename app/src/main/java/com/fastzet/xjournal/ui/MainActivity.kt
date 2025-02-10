@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.ui
+package com.fastzet.xjournal.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -11,8 +11,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.fastjet.xjournal.R
-import com.fastjet.xjournal.databinding.ActivityMainBinding
+import com.fastzet.xjournal.R
+import com.fastzet.xjournal.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setupNavigation()
         setupRecyclerView()
         setupFab()
@@ -38,7 +37,6 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
@@ -48,7 +46,6 @@ class MainActivity : AppCompatActivity() {
             viewModel.selectEntry(entry)
             findNavController(R.id.nav_host_fragment).navigate(R.id.action_entriesList_to_editor)
         }
-
         binding.entriesRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = entriesAdapter
@@ -74,7 +71,6 @@ class MainActivity : AppCompatActivity() {
         binding.apply {
             progressBar.isVisible = state is JournalUiState.Loading
             entriesRecyclerView.isVisible = state is JournalUiState.Success
-            
             when (state) {
                 is JournalUiState.Success -> {
                     entriesAdapter.submitList(state.entries)
