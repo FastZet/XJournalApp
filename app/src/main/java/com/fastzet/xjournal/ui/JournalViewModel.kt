@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.fastzet.xjournal.data.JournalRepository
 import com.fastzet.xjournal.security.JournalEntry
+import com.fastzet.xjournal.security.SyncStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -85,6 +86,14 @@ class JournalViewModel(
     fun setCurrentJournalId(journalId: String) {
         _currentJournalId = journalId
         loadEntries()
+    }
+
+    fun syncEntries() {
+        viewModelScope.launch {
+            repository.getUnsyncedEntriesByJournal(_currentJournalId).forEach { entry ->
+                repository.syncEntry(entry)
+            }
+        }
     }
 
     class Factory(private val repository: JournalRepository) : ViewModelProvider.Factory {
