@@ -1,18 +1,18 @@
-package com.fastjet.xjournal.security
+package com.fastzet.xjournal.security
 
 import android.content.Context
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+import android.util.Base64
 import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.google.gson.Gson
-import java.io.File
-import javax.crypto.SecretKey
-import android.security.keystore.KeyGenParameterSpec
-import android.security.keystore.KeyProperties
-import java.security.SecureRandom
+import java.security.KeyStore
 import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
-import android.util.Base64
 
 class JournalEncryption(private val context: Context) {
     companion object {
@@ -21,10 +21,12 @@ class JournalEncryption(private val context: Context) {
         private const val GCM_NONCE_LENGTH = 12
         private const val ENCRYPTED_PREFS_FILE = "secure_journal_prefs"
         private const val KEY_USER_KEY_ENCRYPTED = "user_key_encrypted"
+        private const val KEY_ALIAS = "metadata_encryption_key"
     }
 
     private val encryptionManager = EncryptionManager()
     private val gson = Gson()
+    private val metadataEncryptionKey: SecretKey by lazy { getMetadataEncryptionKey() }
     
     // Create encrypted preferences for storing sensitive data
     private val encryptedPrefs by lazy {
@@ -81,6 +83,47 @@ class JournalEncryption(private val context: Context) {
         } catch (e: Exception) {
             Log.e(TAG, "Data integrity check failed: ${e.message}")
             return false
+        }
+    }
+    // Encrypt metadata (e.g., file names, timestamps)
+    private fun encryptMetadata(data: String): String {
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, metadataEncryptionKey)
+        val encryptedBytes = cipher.doFinal(data.toByteArray())
+        return Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
+    }
+    // Decrypt metadata
+    private fun decryptMetadata(encryptedData: String): String {
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.DECRYPT_MODE, metadataEncryptionKey)
+        val decryptedBytes = cipher.doFinal(Base64.decode(encryptedData, Base64.NO_WRAP))
+        return String(decryptedBytes)
+    }
+    // Generate or retrieve the metadata encryption key from the Keystore
+    private fun getMetadataEncryptionKey(): SecretKey {
+        val keyStore = KeyStore.getInstance("AndroidKeyStore")
+        keyStore.load(null)
+
+        return if (!keyStore.containsAlias(KEY_ALIAS)) {
+            // Create a new key if it doesn't exist
+            val keyGenerator = KeyGenerator.getInstance(
+                KeyProperties.KEY_ALGORITHM_AES,
+                "AndroidKeyStore"
+            )
+            keyGenerator.init(
+                KeyGenParameterSpec.Builder(
+                    KEY_ALIAS,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
+                )
+                    .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                    .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                    .setKeySize(ENCRYPTION_KEY_SIZE)
+                    .build()
+            )
+            keyGenerator.generateKey()
+        } else {
+            // Retrieve the existing key
+            keyStore.getKey(KEY_ALIAS, null) as SecretKey
         }
     }
 }
