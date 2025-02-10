@@ -3,6 +3,8 @@
     <!-- Internet permissions are not granted by default -->
     <uses-permission android:name="android.permission.INTERNET" android:required="false"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" android:required="false"/>
+    <!-- Permission to write to external storage for exporting journal entries -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="false"  <!-- Changed to false for security -->
@@ -19,7 +21,7 @@
             android:value="false" />
             
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
