@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.ui
+package com.fastzet.xjournal.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,9 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.fastjet.xjournal.R
-import com.fastjet.xjournal.databinding.FragmentEntriesListBinding
+import com.fastzet.xjournal.R
+import com.fastzet.xjournal.databinding.FragmentEntriesListBinding
 import kotlinx.coroutines.launch
 
 class EntriesListFragment : Fragment() {
@@ -18,6 +19,7 @@ class EntriesListFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: JournalViewModel by activityViewModels()
     private lateinit var entriesAdapter: JournalEntriesAdapter
+    private val args: EntriesListFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,7 +32,6 @@ class EntriesListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
         setupFab()
         observeUiState()
@@ -41,7 +42,6 @@ class EntriesListFragment : Fragment() {
             viewModel.selectEntry(entry)
             findNavController().navigate(R.id.action_entriesList_to_editor)
         }
-
         binding.entriesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = entriesAdapter
@@ -61,7 +61,14 @@ class EntriesListFragment : Fragment() {
                 when (state) {
                     is JournalUiState.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        entriesAdapter.submitList(state.entries)
+                        val filteredEntries = state.entries.filter { entry ->
+                            val entryDate = entry.timestamp * 1000
+                            val entryYear = java.time.Instant.ofEpochMilli(entryDate).atZone(java.time.ZoneId.systemDefault()).year
+                            val entryMonth = java.time.Instant.ofEpochMilli(entryDate).atZone(java.time.ZoneId.systemDefault()).monthValue
+                            val entryDay = java.time.Instant.ofEpochMilli(entryDate).atZone(java.time.ZoneId.systemDefault()).dayOfMonth
+                            entryYear == args.year && entryMonth == args.month && entryDay == args.day
+                        }
+                        entriesAdapter.submitList(filteredEntries)
                     }
                     is JournalUiState.Error -> {
                         binding.progressBar.visibility = View.GONE
