@@ -12,7 +12,6 @@ import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
-import javax.crypto.spec.GCMParameterSpec
 
 class JournalEncryption(private val context: Context) {
     companion object {
@@ -27,13 +26,12 @@ class JournalEncryption(private val context: Context) {
     private val encryptionManager = EncryptionManager()
     private val gson = Gson()
     private val metadataEncryptionKey: SecretKey by lazy { getMetadataEncryptionKey() }
-    
+
     // Create encrypted preferences for storing sensitive data
     private val encryptedPrefs by lazy {
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
-
         EncryptedSharedPreferences.create(
             context,
             ENCRYPTED_PREFS_FILE,
@@ -47,9 +45,9 @@ class JournalEncryption(private val context: Context) {
     fun encryptEntry(entry: JournalEntry): EncryptedJournalEntry {
         val jsonEntry = gson.toJson(entry)
         val encryptedData = encryptionManager.encrypt(jsonEntry)
-        
         return EncryptedJournalEntry(
             id = entry.id,
+            journalId = entry.journalId,
             encryptedData = Base64.encodeToString(encryptedData, Base64.NO_WRAP),
             timestamp = entry.timestamp,
             lastModified = entry.lastModified
@@ -65,10 +63,13 @@ class JournalEncryption(private val context: Context) {
 
     // Prepare entry for sync (additional encryption layer for cloud storage)
     fun prepareForSync(encryptedEntry: EncryptedJournalEntry): String {
-        // Add additional encryption/headers for cloud storage
+        // Encrypt metadata (e.g., timestamp)
+        val encryptedTimestamp = encryptMetadata(encryptedEntry.timestamp.toString())
+
+        // Create SyncData with encrypted metadata
         val syncData = SyncData(
             version = 1,
-            timestamp = System.currentTimeMillis(),
+            timestamp = encryptedTimestamp.toLongOrNull() ?: 0L,
             encryptedContent = encryptedEntry.encryptedData
         )
         return gson.toJson(syncData)
@@ -79,12 +80,13 @@ class JournalEncryption(private val context: Context) {
         try {
             val decryptedEntry = decryptEntry(encryptedEntry)
             return entry.id == decryptedEntry.id &&
-                   entry.timestamp == decryptedEntry.timestamp
+                    entry.timestamp == decryptedEntry.timestamp
         } catch (e: Exception) {
             Log.e(TAG, "Data integrity check failed: ${e.message}")
             return false
         }
     }
+
     // Encrypt metadata (e.g., file names, timestamps)
     private fun encryptMetadata(data: String): String {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
@@ -92,6 +94,7 @@ class JournalEncryption(private val context: Context) {
         val encryptedBytes = cipher.doFinal(data.toByteArray())
         return Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
     }
+
     // Decrypt metadata
     private fun decryptMetadata(encryptedData: String): String {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
@@ -99,6 +102,7 @@ class JournalEncryption(private val context: Context) {
         val decryptedBytes = cipher.doFinal(Base64.decode(encryptedData, Base64.NO_WRAP))
         return String(decryptedBytes)
     }
+
     // Generate or retrieve the metadata encryption key from the Keystore
     private fun getMetadataEncryptionKey(): SecretKey {
         val keyStore = KeyStore.getInstance("AndroidKeyStore")
@@ -130,6 +134,7 @@ class JournalEncryption(private val context: Context) {
 
 data class EncryptedJournalEntry(
     val id: String,
+    val journalId: String,
     val encryptedData: String,
     val timestamp: Long,
     val lastModified: Long
