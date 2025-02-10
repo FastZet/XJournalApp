@@ -4,28 +4,23 @@ import android.content.Context
 import com.fastzet.xjournal.security.JournalEncryption
 import com.fastzet.xjournal.security.JournalEntry
 import com.fastzet.xjournal.security.SyncStatus
-import com.fastzet.xjournal.ui.JournalUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import java.time.Instant
-import java.util.concurrent.atomic.AtomicInteger
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStreamWriter
 
 class JournalRepository(
     context: Context,
     private val database: JournalDatabase = JournalDatabase.getDatabase(context),
-    private val encryption: JournalEncryption = JournalEncryption(context),
-    private val syncManager: SyncManager = SyncManager(context)
+    private val encryption: JournalEncryption = JournalEncryption(context)
 ) {
     private val journalDao = database.journalDao()
-    private val _syncState = MutableStateFlow(JournalUiState.Loading)
-    val syncState: Flow<JournalUiState> = _syncState.asStateFlow()
 
-    // Get all entries by journal ID as a Flow, decrypting them as they're observed
-    fun getAllEntriesByJournal(journalId: String): Flow<List<JournalEntry>> {
-        return journalDao.getAllEntriesByJournal(journalId).map { entries ->
+    // Get all entries as a Flow, decrypting them as they're observed
+    fun getAllEntries(): Flow<List<JournalEntry>> {
+        return journalDao.getAllEntries().map { entries ->
             entries.map { encryptedEntry ->
                 encryption.decryptEntry(
                     com.fastzet.xjournal.security.EncryptedJournalEntry(
@@ -71,9 +66,9 @@ class JournalRepository(
         )
     }
 
-    // Get entries that need to be synced by journal ID
-    suspend fun getUnsyncedEntriesByJournal(journalId: String): List<JournalEntry> {
-        return journalDao.getEntriesBySyncStatus(SyncStatus.NOT_SYNCED, journalId).map { encryptedEntry ->
+    // Get entries that need to be synced
+    suspend fun getUnsyncedEntries(): List<JournalEntry> {
+        return journalDao.getEntriesBySyncStatus(SyncStatus.NOT_SYNCED).map { encryptedEntry ->
             encryption.decryptEntry(
                 com.fastzet.xjournal.security.EncryptedJournalEntry(
                     id = encryptedEntry.id,
@@ -86,13 +81,28 @@ class JournalRepository(
         }
     }
 
-    // Update sync status by journal ID
-    suspend fun updateSyncStatus(entryId: String, status: SyncStatus, journalId: String) {
-        journalDao.updateSyncStatus(entryId, status, journalId)
+    // Update sync status
+    suspend fun updateSyncStatus(entryId: String, status: SyncStatus) {
+        journalDao.updateSyncStatus(entryId, status)
     }
 
-    // Sync a single entry
-    private suspend fun syncEntry(entry: JournalEntry) {
-        syncManager.syncEntry(entry)
+    // Export journal entries to a file
+    suspend fun exportEntries(filePath: String): Boolean {
+        return try {
+            val entries = getAllEntries().first()
+            val file = File(filePath)
+            FileOutputStream(file).use { fos ->
+                OutputStreamWriter(fos).use { writer ->
+                    entries.forEach { entry ->
+                        val encryptedEntry = encryption.encryptEntry(entry)
+                        writer.write(encryptedEntry.encryptedData + "\n")
+                    }
+                }
+            }
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 }
