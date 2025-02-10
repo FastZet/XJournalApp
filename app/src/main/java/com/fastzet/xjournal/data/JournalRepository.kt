@@ -1,9 +1,9 @@
-package com.fastjet.xjournal.data
+package com.fastzet.xjournal.data
 
 import android.content.Context
-import com.fastjet.xjournal.security.JournalEncryption
-import com.fastjet.xjournal.security.JournalEntry
-import com.fastjet.xjournal.security.SyncStatus
+import com.fastzet.xjournal.security.JournalEncryption
+import com.fastzet.xjournal.security.JournalEntry
+import com.fastzet.xjournal.security.SyncStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
@@ -15,13 +15,14 @@ class JournalRepository(
 ) {
     private val journalDao = database.journalDao()
 
-    // Get all entries as a Flow, decrypting them as they're observed
-    fun getAllEntries(): Flow<List<JournalEntry>> {
-        return journalDao.getAllEntries().map { entries ->
+    // Get all entries by journal ID as a Flow, decrypting them as they're observed
+    fun getAllEntriesByJournal(journalId: String): Flow<List<JournalEntry>> {
+        return journalDao.getAllEntriesByJournal(journalId).map { entries ->
             entries.map { encryptedEntry ->
                 encryption.decryptEntry(
-                    com.fastjet.xjournal.security.EncryptedJournalEntry(
+                    com.fastzet.xjournal.security.EncryptedJournalEntry(
                         id = encryptedEntry.id,
+                        journalId = encryptedEntry.journalId,
                         encryptedData = encryptedEntry.encryptedData,
                         timestamp = encryptedEntry.timestamp,
                         lastModified = encryptedEntry.lastModified
@@ -37,6 +38,7 @@ class JournalRepository(
         journalDao.insertEntry(
             EncryptedJournalEntryEntity(
                 id = encryptedEntry.id,
+                journalId = encryptedEntry.journalId,
                 encryptedData = encryptedEntry.encryptedData,
                 timestamp = encryptedEntry.timestamp,
                 lastModified = Instant.now().epochSecond,
@@ -51,6 +53,7 @@ class JournalRepository(
         journalDao.deleteEntry(
             EncryptedJournalEntryEntity(
                 id = encryptedEntry.id,
+                journalId = encryptedEntry.journalId,
                 encryptedData = encryptedEntry.encryptedData,
                 timestamp = encryptedEntry.timestamp,
                 lastModified = entry.lastModified,
@@ -59,23 +62,23 @@ class JournalRepository(
         )
     }
 
-    // Get entries that need to be synced
-    suspend fun getUnsynedEntries(): List<JournalEntry> {
-        return journalDao.getEntriesBySyncStatus(SyncStatus.NOT_SYNCED)
-            .map { encryptedEntry ->
-                encryption.decryptEntry(
-                    com.fastjet.xjournal.security.EncryptedJournalEntry(
-                        id = encryptedEntry.id,
-                        encryptedData = encryptedEntry.encryptedData,
-                        timestamp = encryptedEntry.timestamp,
-                        lastModified = encryptedEntry.lastModified
-                    )
+    // Get entries that need to be synced by journal ID
+    suspend fun getUnsyncedEntriesByJournal(journalId: String): List<JournalEntry> {
+        return journalDao.getEntriesBySyncStatus(SyncStatus.NOT_SYNCED, journalId).map { encryptedEntry ->
+            encryption.decryptEntry(
+                com.fastzet.xjournal.security.EncryptedJournalEntry(
+                    id = encryptedEntry.id,
+                    journalId = encryptedEntry.journalId,
+                    encryptedData = encryptedEntry.encryptedData,
+                    timestamp = encryptedEntry.timestamp,
+                    lastModified = encryptedEntry.lastModified
                 )
-            }
+            )
+        }
     }
 
-    // Update sync status
-    suspend fun updateSyncStatus(entryId: String, status: SyncStatus) {
-        journalDao.updateSyncStatus(entryId, status)
+    // Update sync status by journal ID
+    suspend fun updateSyncStatus(entryId: String, status: SyncStatus, journalId: String) {
+        journalDao.updateSyncStatus(entryId, status, journalId)
     }
 }
