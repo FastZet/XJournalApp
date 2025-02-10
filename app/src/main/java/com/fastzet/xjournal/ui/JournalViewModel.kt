@@ -14,14 +14,14 @@ import java.time.Instant
 import java.util.UUID
 
 class JournalViewModel(
-    private val repository: JournalRepository
+    private val repository: JournalRepository,
+    private val context: Context
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(JournalUiState.Loading)
     val uiState: StateFlow<JournalUiState> = _uiState
     private var _selectedEntry: JournalEntry? = null
     val selectedEntry get() = _selectedEntry
     private var _currentJournalId: String = UUID.randomUUID().toString() // Default journal ID
-
     init {
         loadEntries()
     }
@@ -96,11 +96,22 @@ class JournalViewModel(
         }
     }
 
-    class Factory(private val repository: JournalRepository) : ViewModelProvider.Factory {
+    fun exportEntries(filePath: String) {
+        viewModelScope.launch {
+            val success = repository.exportEntries(filePath)
+            if (success) {
+                _uiState.value = JournalUiState.Success(entries = (uiState.value as? JournalUiState.Success)?.entries ?: emptyList())
+            } else {
+                _uiState.value = JournalUiState.Error("Failed to export entries")
+            }
+        }
+    }
+
+    class Factory(private val repository: JournalRepository, private val context: Context) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(JournalViewModel::class.java)) {
-                return JournalViewModel(repository) as T
+                return JournalViewModel(repository, context) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }
