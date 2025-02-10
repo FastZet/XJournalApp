@@ -2,7 +2,7 @@ package com.fastzet.xjournal.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.fastjet.xjournal.security.SyncStatus
+import com.fastzet.xjournal.security.SyncStatus
 
 @Entity(tableName = "encrypted_entries")
 data class EncryptedJournalEntryEntity(
