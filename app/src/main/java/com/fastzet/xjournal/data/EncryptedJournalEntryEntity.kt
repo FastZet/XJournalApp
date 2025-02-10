@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.data
+package com.fastzet.xjournal.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,6 +8,7 @@ import com.fastjet.xjournal.security.SyncStatus
 data class EncryptedJournalEntryEntity(
     @PrimaryKey
     val id: String,
+    val journalId: String,
     val encryptedData: String,
     val timestamp: Long,
     val lastModified: Long,
