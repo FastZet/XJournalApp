@@ -9,4 +9,6 @@
     <string name="last_modified">Last Modified</string>
     <string name="select_date">Select Date</string>
     <string name="open_calendar">Open Calendar</string>
+    <string name="sync">Sync</string>
+    <string name="no_entries">No entries found</string>
 </resources>
