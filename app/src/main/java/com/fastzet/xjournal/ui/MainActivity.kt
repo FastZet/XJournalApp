@@ -57,6 +57,9 @@ class MainActivity : AppCompatActivity() {
             viewModel.createNewEntry()
             findNavController(R.id.nav_host_fragment).navigate(R.id.action_entriesList_to_editor)
         }
+        binding.fabSync.setOnClickListener {
+            viewModel.syncEntries()
+        }
     }
 
     private fun observeUiState() {
