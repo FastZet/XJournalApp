@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.data
+package com.fastzet.xjournal.data
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
