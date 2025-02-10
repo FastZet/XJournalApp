@@ -3,8 +3,10 @@
     <string name="new_entry">New Entry</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
-    <string name="title_hint">Title</string>
-    <string name="content_hint">Write your thoughts…</string>
+    <string name="title">Title</string>
+    <string name="write_your_thoughts">Write your thoughts…</string>
     <string name="sync_status">Sync Status</string>
     <string name="last_modified">Last Modified</string>
+    <string name="select_date">Select Date</string>
+    <string name="open_calendar">Open Calendar</string>
 </resources>
