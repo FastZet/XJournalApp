@@ -11,4 +11,9 @@
     <string name="open_calendar">Open Calendar</string>
     <string name="sync">Sync</string>
     <string name="no_entries">No entries found</string>
+    <string name="export">Export</string>
+    <string name="export_title">Export Journal</string>
+    <string name="export_message">Enter the file path for the export:</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose_file">Choose File</string>
 </resources>
