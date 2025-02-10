@@ -1,8 +1,8 @@
-package com.brksays.xjournal.data
+package com.fastjet.xjournal.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.brksays.xjournal.security.SyncStatus
+import com.fastjet.xjournal.security.SyncStatus
 
 @Entity(tableName = "encrypted_entries")
 data class EncryptedJournalEntryEntity(

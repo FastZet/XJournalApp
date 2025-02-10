@@ -1,4 +1,4 @@
-package com.brksays.xjournal.network
+package com.fastjet.xjournal.network
 
 import android.content.Context
 import android.net.ConnectivityManager

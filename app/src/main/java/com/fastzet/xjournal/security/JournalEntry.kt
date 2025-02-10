@@ -1,4 +1,4 @@
-package com.brksays.xjournal.security
+package com.fastjet.xjournal.security
 
 import java.time.Instant
 import java.util.UUID

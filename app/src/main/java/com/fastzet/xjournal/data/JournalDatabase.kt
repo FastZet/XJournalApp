@@ -1,4 +1,4 @@
-package com.brksays.xjournal.data
+package com.fastjet.xjournal.data
 
 import android.content.Context
 import androidx.room.Database

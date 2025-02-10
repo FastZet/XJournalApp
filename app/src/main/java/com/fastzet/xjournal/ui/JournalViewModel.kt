@@ -1,10 +1,10 @@
-package com.brksays.xjournal.ui
+package com.fastjet.xjournal.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.brksays.xjournal.data.JournalRepository
-import com.brksays.xjournal.security.JournalEntry
+import com.fastjet.xjournal.data.JournalRepository
+import com.fastjet.xjournal.security.JournalEntry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch

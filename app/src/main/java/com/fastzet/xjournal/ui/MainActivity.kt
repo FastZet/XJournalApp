@@ -1,4 +1,4 @@
-package com.brksays.xjournal.ui
+package com.fastjet.xjournal.ui
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -11,8 +11,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.brksays.xjournal.R
-import com.brksays.xjournal.databinding.ActivityMainBinding
+import com.fastjet.xjournal.R
+import com.fastjet.xjournal.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

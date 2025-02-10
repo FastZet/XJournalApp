@@ -1,12 +1,12 @@
-package com.brksays.xjournal.ui
+package com.fastjet.xjournal.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.brksays.xjournal.databinding.ItemJournalEntryBinding
-import com.brksays.xjournal.security.JournalEntry
+import com.fastjet.xjournal.databinding.ItemJournalEntryBinding
+import com.fastjet.xjournal.security.JournalEntry
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

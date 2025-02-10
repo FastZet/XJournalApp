@@ -1,4 +1,4 @@
-package com.brksays.xjournal.ui
+package com.fastjet.xjournal.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.brksays.xjournal.R
-import com.brksays.xjournal.databinding.FragmentEntriesListBinding
+import com.fastjet.xjournal.R
+import com.fastjet.xjournal.databinding.FragmentEntriesListBinding
 import kotlinx.coroutines.launch
 
 class EntriesListFragment : Fragment() {

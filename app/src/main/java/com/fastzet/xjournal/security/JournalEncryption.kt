@@ -1,4 +1,4 @@
-package com.brksays.xjournal.security
+package com.fastjet.xjournal.security
 
 import android.content.Context
 import android.util.Log

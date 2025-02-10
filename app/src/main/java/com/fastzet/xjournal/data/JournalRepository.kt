@@ -1,9 +1,9 @@
-package com.brksays.xjournal.data
+package com.fastjet.xjournal.data
 
 import android.content.Context
-import com.brksays.xjournal.security.JournalEncryption
-import com.brksays.xjournal.security.JournalEntry
-import com.brksays.xjournal.security.SyncStatus
+import com.fastjet.xjournal.security.JournalEncryption
+import com.fastjet.xjournal.security.JournalEntry
+import com.fastjet.xjournal.security.SyncStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
@@ -20,7 +20,7 @@ class JournalRepository(
         return journalDao.getAllEntries().map { entries ->
             entries.map { encryptedEntry ->
                 encryption.decryptEntry(
-                    com.brksays.xjournal.security.EncryptedJournalEntry(
+                    com.fastjet.xjournal.security.EncryptedJournalEntry(
                         id = encryptedEntry.id,
                         encryptedData = encryptedEntry.encryptedData,
                         timestamp = encryptedEntry.timestamp,
@@ -64,7 +64,7 @@ class JournalRepository(
         return journalDao.getEntriesBySyncStatus(SyncStatus.NOT_SYNCED)
             .map { encryptedEntry ->
                 encryption.decryptEntry(
-                    com.brksays.xjournal.security.EncryptedJournalEntry(
+                    com.fastjet.xjournal.security.EncryptedJournalEntry(
                         id = encryptedEntry.id,
                         encryptedData = encryptedEntry.encryptedData,
                         timestamp = encryptedEntry.timestamp,

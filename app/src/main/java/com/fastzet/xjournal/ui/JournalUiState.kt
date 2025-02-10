@@ -1,6 +1,6 @@
-package com.brksays.xjournal.ui
+package com.fastjet.xjournal.ui
 
-import com.brksays.xjournal.security.JournalEntry
+import com.fastjet.xjournal.security.JournalEntry
 
 sealed class JournalUiState {
     data object Loading : JournalUiState()
