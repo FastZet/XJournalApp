@@ -1,10 +1,11 @@
-package com.fastjet.xjournal.security
+package com.fastzet.xjournal.security
 
 import java.time.Instant
 import java.util.UUID
 
 data class JournalEntry(
     val id: String = UUID.randomUUID().toString(),
+    val journalId: String = UUID.randomUUID().toString(),
     val timestamp: Long = Instant.now().epochSecond,
     val title: String,
     val content: String,
