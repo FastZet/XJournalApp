@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fastzet.xjournal">
+
     <!-- Internet permissions are not granted by default -->
     <uses-permission android:name="android.permission.INTERNET" android:required="false"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" android:required="false"/>
@@ -16,7 +18,7 @@
         android:theme="@style/Theme.XJournal">
         
         <!-- Internet access will be disabled by default -->
-        <property
+        <meta-data
             android:name="android.networkEnabled"
             android:value="false" />
             

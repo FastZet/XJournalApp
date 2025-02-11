@@ -19,6 +19,7 @@ android {
     }
 
     buildFeatures {
+        viewBinding true
         buildConfig true
     }
 
@@ -32,11 +33,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "DEBUG_MODE", "false"
-        }
-    }
-    
-    buildFeatures {
-        viewBinding true
+        }   
     }
     
     compileOptions {
