@@ -1,0 +1,23 @@
+version: 2
+updates:
+  # Check for Gradle dependency updates
+  - package-ecosystem: "gradle"
+    directory: "/"  # The root directory where build.gradle is located
+    schedule:
+      interval: "weekly"  # How often to check for updates (daily, weekly, monthly)
+    open-pull-requests-limit: 5  # Maximum number of open PRs at a time
+    reviewers:
+      - "fastzet"  # Optional: Assign reviewers for PRs
+    labels:
+      - "dependencies"  # Optional: Add labels to the PRs
+
+  # Check for GitHub Actions workflow updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "fastzet"
+    labels:
+      - "dependencies"
