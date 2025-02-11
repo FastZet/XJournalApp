@@ -10,7 +10,6 @@ updates:
       - "fastzet"  # Optional: Assign reviewers for PRs
     labels:
       - "dependencies"  # Optional: Add labels to the PRs
-    versioning-strategy: "auto"  # Automatically determine version updates
 
   # Check for GitHub Actions workflow updates
   - package-ecosystem: "github-actions"
