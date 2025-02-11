@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.network
+package com.fastzet.xjournal.network
 
 import android.content.Context
 import android.net.ConnectivityManager

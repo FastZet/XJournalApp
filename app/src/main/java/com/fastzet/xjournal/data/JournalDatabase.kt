@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.data
+package com.fastzet.xjournal.data
 
 import android.content.Context
 import androidx.room.Database

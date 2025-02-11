@@ -1,4 +1,4 @@
-package com.fastjet.xjournal.ui
+package com.fastzet.xjournal.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.fastjet.xjournal.R
-import com.fastjet.xjournal.databinding.FragmentEntryEditorBinding
+import com.fastzet.xjournal.R
+import com.fastzet.xjournal.databinding.FragmentEntryEditorBinding
 import kotlinx.coroutines.launch
 
 class EntryEditorFragment : Fragment() {
