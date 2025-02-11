@@ -5,17 +5,21 @@ plugins {
 }
 
 android {
-    namespace 'com.brksays.xjournal'
+    namespace 'com.fastzet.xjournal'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.brksays.xjournal"
+        applicationId "com.fastzet.xjournal"
         minSdk 24
         targetSdk 34
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
     }
 
     buildTypes {
